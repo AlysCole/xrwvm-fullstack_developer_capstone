@@ -131,7 +131,7 @@ def get_dealer(request, dealer_id):
 
 
 # Create a `get_dealer_reviews` view to render the reviews of a dealer
-def get_dealer_reviews(request,dealer_id):
+def get_dealer_reviews(request, dealer_id):
     if (dealer_id):
         reviews = get_request("/fetchReviews/dealer/" + str(dealer_id))
         for review_detail in reviews:
