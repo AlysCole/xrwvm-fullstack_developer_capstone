@@ -1,12 +1,12 @@
 # Uncomment the required imports before adding the code
 
-from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse
+# from django.shortcuts import render
+# from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404, render, redirect
+# from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import logout
-from django.contrib import messages
-from datetime import datetime
+# from django.contrib import messages
+# from datetime import datetime
 
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
@@ -66,11 +66,13 @@ def registration(request):
         username_exist = True
     except Exception as err:
         logger.debug("{} is new user".format(username))
+        print(f"Unexpected {err=}, {type(err)=}")
     try:
         User.objects.get(email=email)
         email_exist = True
     except Exception as err:
         logger.debug("{} is new email".format(email))
+        print(f"Unexpected {err=}, {type(err)=}")
     # If not, create a new user and login the user
     if not username_exist and not email_exist:
         user = User.objects.create_user(username=username,
@@ -84,12 +86,12 @@ def registration(request):
         data = {"userName": username, "status": "User already exists"}
     return JsonResponse(data)
 
-def get_cars(request):
-    count = CarMake.objects.filter().count()  #pylint: disable=no-member
+def get_cars():
+    count = CarMake.objects.filter().count()  # pylint: disable=no-member
     print(count)
     if (count == 0):
         initiate()
-    car_models = CarModel.objects.select_related('car_make')  #pylint: disable=no-member
+    car_models = CarModel.objects.select_related('car_make')  # pylint: disable=no-member
     cars = []
     for car_model in car_models:
         cars.append({
@@ -140,7 +142,7 @@ def get_dealer_reviews(request,dealer_id):
 
 # Create a `add_review` view to submit a review
 def add_review(request):
-    if(request.user.is_anonymous == False):
+    if (request.user.is_anonymous is False):
         data = json.loads(request.body)
         try:
             post_review(data)
@@ -152,4 +154,3 @@ def add_review(request):
             })
     else:
         return JsonResponse({"status": 403, "message": "Unauthorized"})
-
