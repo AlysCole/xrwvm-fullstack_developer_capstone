@@ -40,12 +40,14 @@ def login_user(request):
         data = {"userName": username, "status": "Authenticated"}
     return JsonResponse(data)
 
+
 # Create a `logout_request` view to handle sign out request
 def logout_request(request):
     # Get the user object based on session id in request
     logout(request)
     data = {"userName": ""}
     return JsonResponse(data)
+
 
 # Create a `registration` view to handle sign up request
 @csrf_exempt
@@ -86,12 +88,15 @@ def registration(request):
         data = {"userName": username, "status": "User already exists"}
     return JsonResponse(data)
 
+
 def get_cars():
     count = CarMake.objects.filter().count()  # pylint: disable=no-member
     print(count)
     if (count == 0):
         initiate()
-    car_models = CarModel.objects.select_related('car_make')  # pylint: disable=no-member
+    car_models = CarModel.objects.select_related(  # pylint: disable=no-member
+        'car_make'
+    )
     cars = []
     for car_model in car_models:
         cars.append({
@@ -99,6 +104,7 @@ def get_cars():
             "CarMake": car_model.car_make.name
         })
     return JsonResponse({"CarModels": cars})
+
 
 # Update the `get_dealerships` render list of dealerships all by default,
 # particular state if state is passed
@@ -110,7 +116,8 @@ def get_dealerships(request, state="All"):
     dealerships = get_request(endpoint)
     return JsonResponse({"status": 200, "dealers": dealerships})
 
-#Update the `get_dealerships` render list of dealerships all by default,
+
+# Update the `get_dealerships` render list of dealerships all by default,
 # particular state if state is passed
 def get_dealer(request, dealer_id):
     if (dealer_id):
@@ -148,6 +155,7 @@ def add_review(request):
             post_review(data)
             return JsonResponse({"status": 200})
         except Exception as err:
+            print(f"Unexpected {err=}, {type(err)=}")
             return JsonResponse({
                 "status": 401,
                 "message": "Error in posting review"
